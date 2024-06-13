@@ -1,93 +1,19 @@
-import { Table, Tabs, message, FloatButton } from "antd";
+import { Table, Tabs, message, FloatButton, Card, Space, Divider } from "antd";
 import moment from "moment";
-import { useRef } from "react";
+import { useRef, useState } from "react";
 import { CopyOutlined } from "@ant-design/icons";
+import * as Comm from "../common";
 const { TabPane } = Tabs;
 
-const PurchaseFinalTable = ({ data: dataSource }) => {
-  const groupTitle = [
-    {
-      search: ["双岗"],
-      key: "双岗",
-      value: "双岗",
-    },
-    {
-      search: ["蔬菜"],
-      key: "罗志友",
-      value: "罗志友",
-    },
-    {
-      search: ["四湾"],
-      key: "金老板",
-      value: "金老板",
-    },
-    {
-      search: ["朱秀勤", "秀勤"],
-      key: "李涛",
-      value: "李涛",
-    },
-    {
-      search: ["陶俊新"],
-      key: "陶俊新",
-      value: "陶俊新",
-    },
-    {
-      search: ["牛中月"],
-      key: "牛中月",
-      value: "牛中月",
-    },
-    {
-      search: ["知勤"],
-      key: "锦泽商贸",
-      value: "锦泽商贸",
-    },
-    {
-      search: ["小菜市"],
-      key: "小菜市",
-      value: "小菜市",
-    },
-    {
-      search: ["易耗品"],
-      key: "易耗品",
-      value: "易耗品",
-    },
-    {
-      search: ["土禽"],
-      key: "李军军",
-      value: "李军军",
-    },
-    {
-      search: ["君淐"],
-      key: "君淐",
-      value: "君淐",
-    },
-    {
-      search: ["茂昌"],
-      key: "茂昌",
-      value: "茂昌",
-    },
-    {
-      search: ["荣凡商贸"],
-      key: "荣凡商贸",
-      value: "荣凡商贸",
-    },
-    {
-      search: ["优味乐"],
-      key: "优味乐",
-      value: "优味乐",
-    },
-    {
-      search: ["老店"],
-      key: "老店",
-      value: "老店",
-    },
-    {
-      search: ["金正梅"],
-      key: "金正梅",
-      value: "金正梅",
-    },
-  ];
+const PurchaseFinalTable = ({ data: dataSource, flatData }) => {
+  const [groupTitle] = useState(() => {
+    const dcy = window.localStorage.getItem("dcy");
+    return dcy ? JSON.parse(dcy) : [];
+  });
+
   const textareaRef = useRef(null);
+
+  const flatFinalData = flatData.filter((v) => v.groupKey);
 
   const columns = [
     {
@@ -134,6 +60,11 @@ const PurchaseFinalTable = ({ data: dataSource }) => {
       dataIndex: "付款情况",
       key: "付款情况",
     },
+    {
+      title: "原始数据",
+      dataIndex: "originalValue",
+      key: "originalValue",
+    },
   ];
 
   const tabContentStyle = {
@@ -145,22 +76,25 @@ const PurchaseFinalTable = ({ data: dataSource }) => {
   };
 
   const getTableDataAsString = (dataSource) => {
+    const exportCols = [...columns];
+    exportCols.pop(); // 移除操作列
     const rows = dataSource.map((row) =>
-      columns.map((col) => row[col.dataIndex]).join("\t")
+      exportCols.map((col) => row[col.dataIndex] ?? "").join("\t")
     );
     return rows.join("\n");
   };
 
-  const copyToClipboard = (dataSource) => {
+  const copyToClipboard = async (dataSource) => {
     const text = getTableDataAsString(dataSource);
-    if (textareaRef.current) {
-      textareaRef.current.value = text;
-      textareaRef.current.select();
-      textareaRef.current.setSelectionRange(0, 99999);
-      document.execCommand("copy");
+    try {
+      await navigator.clipboard.writeText(text);
       message.success("Table data copied to clipboard!");
+    } catch (err) {
+      console.error("Failed to copy: ", err);
+      message.error("Failed to copy data to clipboard.");
     }
   };
+
   return (
     <Tabs
       style={{
@@ -173,10 +107,20 @@ const PurchaseFinalTable = ({ data: dataSource }) => {
         return (
           <TabPane tab={item.value} key={item.key}>
             <div style={tabContentStyle}>
-              <p>条数：{dataSource[item.key].total}</p>
+              <Card>
+                <Space size="large">
+                  <label>总条数：{flatFinalData.length ?? 0}</label>
+                  <label>总金额：{Comm.getSum(flatFinalData, "金额")}</label>
+                  <Divider type="vertical" />
+                  <label>条数：{dataSource[item.key]?.length ?? 0}</label>
+                  <label>
+                    金额：{Comm.getSum(dataSource[item.key], "金额")}
+                  </label>
+                </Space>
+              </Card>
               <Table
                 columns={columns}
-                dataSource={dataSource[item.key].data}
+                dataSource={dataSource[item.key] || []}
                 pagination={false}
               />
               <FloatButton

@@ -1,8 +1,9 @@
-import { Table, Tabs } from "antd";
+import { Table, Tabs, Space, Divider, Card } from "antd";
 import moment from "moment";
+import * as Comm from "../common";
 const { TabPane } = Tabs;
 
-const PurchaseTable = ({ data }) => {
+const PurchaseTable = ({ data, flatData }) => {
   const columns = [
     {
       title: "时间",
@@ -69,7 +70,15 @@ const PurchaseTable = ({ data }) => {
         return (
           <TabPane tab={key} key={key}>
             <div style={tabContentStyle}>
-              <p>条数：{data[key].total}</p>
+              <Card>
+                <Space size="large">
+                  <label>总条数：{flatData.length ?? 0}</label>
+                  <label>总金额：{Comm.getSum(flatData, "金额")}</label>
+                  <Divider type="vertical" />
+                  <label>当前条数：{data[key].data.length ?? 0}</label>
+                  <label>当前金额：{Comm.getSum(data[key].data, "金额")}</label>
+                </Space>
+              </Card>
               <Table
                 columns={columns}
                 dataSource={data[key].data}
