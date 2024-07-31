@@ -75,9 +75,13 @@ const PurchaseFinalTable = ({ data: dataSource, flatData }) => {
     background: "#fafafa",
   };
 
-  const getTableDataAsString = (dataSource) => {
+  const getTableDataAsString = (data) => {
     const exportCols = [...columns];
     exportCols.pop(); // 移除操作列
+    let dataSource = data.map((v) => ({
+      ...v,
+      时间: moment(v["时间"]).format("YYYY/MM/DD"),
+    }));
     const rows = dataSource.map((row) =>
       exportCols.map((col) => row[col.dataIndex] ?? "").join("\t")
     );
