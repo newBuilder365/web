@@ -119,7 +119,7 @@ const ExcelUploader = () => {
       value: "水产金",
     },
     {
-      search: ["双岗王燕"],
+      search: ["双岗王燕", "干货王燕"],
       key: "王燕干货",
       value: "王燕干货",
     },
@@ -157,6 +157,11 @@ const ExcelUploader = () => {
       search: ["日盛海参"],
       key: "日盛海参",
       value: "日盛海参",
+    },
+    {
+      search: ["必九餐饮"],
+      key: "必九餐饮",
+      value: "必九餐饮",
     },
     {
       search: ["蒙牛"],
@@ -271,7 +276,7 @@ const ExcelUploader = () => {
       setGroupTitle(newData);
       window.localStorage.setItem("dcy", JSON.stringify(newData));
     }
-  // eslint-disable-next-line react-hooks/exhaustive-deps
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
 
   const getFlatData = (dataSource) => {
@@ -292,18 +297,18 @@ const ExcelUploader = () => {
         setGroupTitle(groupNewTitle);
       }
       for (const item of groupNewTitle) {
-        if (isTrue(item, v["经办人"])) {
-          updatedRecord = {
-            ...updatedRecord,
-            groupKey: "经办人",
-            groupValue: item.value,
-          };
-          break;
-        }
         if (isTrue(item, v["供应商"])) {
           updatedRecord = {
             ...updatedRecord,
             groupKey: "供应商",
+            groupValue: item.value,
+          };
+          break;
+        }
+        if (isTrue(item, v["经办人"])) {
+          updatedRecord = {
+            ...updatedRecord,
+            groupKey: "经办人",
             groupValue: item.value,
           };
           break;
@@ -372,7 +377,20 @@ const ExcelUploader = () => {
         let dataSource = response.data;
         Object.keys(dataSource).forEach((key) => {
           dataSource[key]["data"] = dataSource[key].data?.filter(
-            (v) => v["菜品"] && v["菜品"] !== "菜品" && v["时间"]
+            (v) =>
+              (v["菜品"] && v["菜品"] !== "菜品" && v["时间"]) ||
+              v["数量"] === "优惠"
+          );
+          dataSource[key]["data"] = dataSource[key].data?.map((v, i) =>
+            v["数量"] === "优惠"
+              ? {
+                  ...v,
+                  经办人: dataSource[key].data[i - 1]["经办人"] || "",
+                  供应商: dataSource[key].data[i - 1]["供应商"] || "",
+                  付款情况: dataSource[key].data[i - 1]["付款情况"] || "",
+                  时间: dataSource[key].data[i - 1]["时间"] || "",
+                }
+              : v
           );
         });
         setUploadData(dataSource);

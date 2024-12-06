@@ -28,15 +28,15 @@ const PurchaseFinalTable = ({ data: dataSource, flatData }) => {
       key: "菜品",
     },
     {
-      title: "数量",
-      dataIndex: "数量",
-      key: "数量",
-      align: "right",
-    },
-    {
       title: "单价",
       dataIndex: "单价",
       key: "单价",
+      align: "right",
+    },
+    {
+      title: "数量",
+      dataIndex: "数量",
+      key: "数量",
       align: "right",
     },
     {
@@ -44,6 +44,11 @@ const PurchaseFinalTable = ({ data: dataSource, flatData }) => {
       dataIndex: "金额",
       key: "金额",
       align: "right",
+    },
+    {
+      title: "",
+      dataIndex: "",
+      key: "",
     },
     {
       title: "经办人",

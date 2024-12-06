@@ -136,25 +136,20 @@ const SalesPage = () => {
           dataIndex: "POS机",
           key: "POS机",
         },
+        // {
+        //   title: "手机微信",
+        //   dataIndex: "手机微信",
+        //   key: "手机微信",
+        // },
+        // {
+        //   title: "美团劵",
+        //   dataIndex: "美团劵",
+        //   key: "美团劵",
+        // },
         {
           title: "会员扣卡",
           dataIndex: "会员扣卡",
           key: "会员扣卡",
-        },
-        {
-          title: "手机微信",
-          dataIndex: "手机微信",
-          key: "手机微信",
-        },
-        {
-          title: "美团劵",
-          dataIndex: "美团劵",
-          key: "美团劵",
-        },
-        {
-          title: "代金券",
-          dataIndex: "代金券",
-          key: "代金券",
         },
       ],
     },
@@ -256,7 +251,7 @@ const SalesPage = () => {
       dataIndex: "会员扣卡",
       key: "会员扣卡",
     },
-    // {
+    //  {
     //   title: "手机微信",
     //   dataIndex: "手机微信",
     //   key: "手机微信",
@@ -265,6 +260,11 @@ const SalesPage = () => {
     //   title: "美团劵",
     //   dataIndex: "美团劵",
     //   key: "美团劵",
+    // },
+    // {
+    //   title: "会员扣卡",
+    //   dataIndex: "会员扣卡",
+    //   key: "会员扣卡",
     // },
     // {
     //   title: "代金券",
